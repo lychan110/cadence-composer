@@ -67,7 +67,6 @@ export default function BlockComposer() {
     })
   )
 
-  // Extract tags from blocks whenever they change
   useEffect(() => {
     const found = new Set()
     const re = /\{\{([^}]+)\}\}/g
@@ -131,14 +130,17 @@ export default function BlockComposer() {
   return (
     <section className="section">
       <h2>Blocks</h2>
-      <textarea
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        placeholder="Paste HTML with {{tag}} placeholders..."
-        rows={4}
-        className="field"
-      />
-      <Button onClick={add} className="mt-sm">Add block</Button>
+      <div className="field-group">
+        <textarea
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          placeholder="Paste HTML with {{tag}} placeholders..."
+          rows={4}
+          className="field"
+        />
+        <Button onClick={add} className="mt-sm">Add block</Button>
+      </div>
+      <p className="muted-text">Blocks: {state.blocks.length} · Draft length: {(draft || '').length}</p>
 
       <div aria-live="polite" ref={announceRef} className="sr-only" />
 
