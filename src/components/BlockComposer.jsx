@@ -80,11 +80,12 @@ export default function BlockComposer() {
   }, [state.blocks, dispatch])
 
   const add = () => {
-    if (!draft.trim()) return
-    dispatch({
-      type: 'SET_BLOCKS',
-      payload: [...state.blocks, { id: crypto.randomUUID(), html: draft.trim() }],
-    })
+    const trimmed = (draft || '').trim()
+    console.log('[BlockComposer] add click', { draft, trimmed, len: (draft || '').length })
+    if (!trimmed) return
+    const payload = [...state.blocks, { id: crypto.randomUUID(), html: trimmed }]
+    console.log('[BlockComposer] dispatching SET_BLOCKS', { count: payload.length })
+    dispatch({ type: 'SET_BLOCKS', payload })
     setDraft('')
   }
 
