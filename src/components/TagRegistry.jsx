@@ -17,7 +17,9 @@ export default function TagRegistry() {
   return (
     <section style={{ marginBottom: '1.5rem' }}>
       <h2>Tags</h2>
-      {state.tags.length === 0 && <p>No tags yet. Add some {{tag}} placeholders in your blocks.</p>}
+      {state.tags.length === 0 && (
+        <p>No tags yet. Add some {'{{tag}}'} placeholders in your blocks.</p>
+      )}
       <ul>
         {state.tags.map((t) => (
           <li key={t}>{t}</li>
