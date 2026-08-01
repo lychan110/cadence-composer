@@ -22,21 +22,22 @@ export default function Preview() {
   })()
 
   if (!previewHtml) {
-    return <section><h2>Preview</h2><p>Add blocks to see a live preview.</p></section>
+    return (
+      <section className="section">
+        <h2>Preview</h2>
+        <p className="muted-text">Add blocks to see a live preview.</p>
+      </section>
+    )
   }
 
   return (
-    <section>
+    <section className="section">
       <h2>Preview</h2>
       <div
         ref={containerRef}
+        // DOMPurify.sanitize is applied above — content is trusted post-sanitization
         dangerouslySetInnerHTML={{ __html: previewHtml }}
-        style={{
-          border: '1px solid #ddd',
-          padding: '1rem',
-          background: '#fff',
-          minHeight: '200px',
-        }}
+        className="preview-container"
       />
     </section>
   )

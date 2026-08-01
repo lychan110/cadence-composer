@@ -1,6 +1,7 @@
 import { useApp } from '../AppContext.jsx'
 import { substitute } from '../lib/template.js'
 import { buildExportPayload } from '../lib/serialization.js'
+import { Button } from './ui/Button.jsx'
 
 export default function Toolbar() {
   const { state, dispatch } = useApp()
@@ -91,18 +92,23 @@ export default function Toolbar() {
   }
 
   return (
-    <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-      <h1 style={{ marginRight: '1rem' }}>Cadence</h1>
-      <button onClick={saveTemplate}>Save template</button>
-      <label>
+    <div className="toolbar mb-lg flex items-center flex-wrap gap-sm">
+      <h1 className="mr-md">Cadence</h1>
+      <Button onClick={saveTemplate} variant="primary">Save template</Button>
+      <label className="button-label">
         Load template
-        <input type="file" accept=".cadence.json" onChange={loadTemplate} hidden />
+        <input
+          type="file"
+          accept=".cadence.json"
+          onChange={loadTemplate}
+          className="sr-only"
+        />
       </label>
       {state.csvRows.length > 0 && (
         <>
-          <button onClick={renderAll}>Render all rows</button>
+          <Button onClick={renderAll} variant="primary">Render all rows</Button>
           {state.renderResults.length > 0 && (
-            <button onClick={downloadZip}>Download ZIP</button>
+            <Button onClick={downloadZip} variant="primary">Download ZIP</Button>
           )}
         </>
       )}

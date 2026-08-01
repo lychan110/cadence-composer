@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import Papa from 'papaparse'
 import { useApp } from '../AppContext.jsx'
 import { printCurrentRow } from '../lib/pdf.js'
+import { Button } from './ui/Button.jsx'
 
 export default function CsvMapper() {
   const { state, dispatch } = useApp()
@@ -54,21 +55,29 @@ export default function CsvMapper() {
   }
 
   return (
-    <section style={{ marginBottom: '1.5rem' }}>
+    <section className="section">
       <h2>CSV</h2>
-      <input type="file" accept=".csv" onChange={onUpload} />
+      <label className="button-label">
+        Choose File
+        <input
+          type="file"
+          accept=".csv"
+          onChange={onUpload}
+          className="sr-only"
+        />
+      </label>
 
       {state.csvHeaders.length > 0 && (
-        <div style={{ marginTop: '0.75rem' }}>
+        <div className="mt-md">
           <h3>Column mapping</h3>
           {state.csvHeaders.map((header, idx) => (
-            <div key={header} style={{ marginBottom: '0.5rem' }}>
-              <label>
-                <strong>{header}</strong> →
+            <div key={header} className="field-row">
+              <label className="field-label">
+                <strong>{header}</strong>
                 <select
                   value={state.csvMapping[header] ?? ''}
                   onChange={(e) => mapColumn(header, e.target.value)}
-                  style={{ marginLeft: '0.5rem' }}
+                  className="select"
                 >
                   <option value="">— ignore —</option>
                   {state.tags.map((t) => (
@@ -76,32 +85,28 @@ export default function CsvMapper() {
                   ))}
                 </select>
                 {exactSuggestions[idx] && (
-                  <span style={{ marginLeft: '0.5rem', color: '#666' }}>
-                    suggested: {exactSuggestions[idx]}
-                  </span>
+                  <span className="muted-text ml-sm">suggested: {exactSuggestions[idx]}</span>
                 )}
               </label>
             </div>
           ))}
 
           {unmappedTags.length > 0 && (
-            <p style={{ color: 'crimson', marginTop: '0.5rem' }}>
-              Unmapped tags: {unmappedTags.join(', ')}
-            </p>
+            <p className="error-text mt-sm">Unmapped tags: {unmappedTags.join(', ')}</p>
           )}
 
-          <p style={{ marginTop: '0.5rem', color: '#666' }}>
-            {state.csvRows.length} rows loaded
-          </p>
+          <p className="muted-text mt-sm">{state.csvRows.length} rows loaded</p>
 
           {state.renderResults.length > 0 && (
-            <div style={{ marginTop: '1rem', borderTop: '1px solid #ddd', paddingTop: '0.5rem' }}>
+            <div className="mt-lg pt-md border-t">
               <h3>Rendered rows</h3>
-              <p>{state.renderResults.length} rendered, {state.renderErrors.length} errors</p>
+              <p className="muted-text">
+                {state.renderResults.length} rendered, {state.renderErrors.length} errors
+              </p>
               {state.renderErrors.length > 0 && (
                 <details>
-                  <summary style={{ color: 'crimson' }}>Errors</summary>
-                  <ul>
+                  <summary className="error-text cursor-pointer">Errors</summary>
+                  <ul className="mt-sm space-y-xs">
                     {state.renderErrors.map((e) => (
                       <li key={e.rowIndex}>Row {e.rowIndex + 1}: {e.error}</li>
                     ))}
@@ -109,11 +114,11 @@ export default function CsvMapper() {
                 </details>
               )}
               {state.renderResults.map((r) => (
-                <details key={r.rowIndex} style={{ marginTop: '0.5rem' }}>
+                <details key={r.rowIndex} className="mt-sm">
                   <summary>Row {r.rowIndex + 1}</summary>
-                  <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.5rem' }}>
-                    <button onClick={() => handleDownloadRow(r.html)}>Download HTML</button>
-                    <button onClick={() => handlePrintRow(r.html)}>Print row</button>
+                  <div className="mt-sm flex gap-sm">
+                    <Button variant="secondary" size="sm" onClick={() => handleDownloadRow(r.html)}>Download HTML</Button>
+                    <Button variant="secondary" size="sm" onClick={() => handlePrintRow(r.html)}>Print row</Button>
                   </div>
                 </details>
               ))}

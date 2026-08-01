@@ -15,6 +15,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable'
 import { useApp } from '../AppContext.jsx'
+import { Button } from './ui/Button.jsx'
 
 function SortableBlock({ block, index, onUpdate, onRemove, onMove, announceRef }) {
   const {
@@ -32,41 +33,23 @@ function SortableBlock({ block, index, onUpdate, onRemove, onMove, announceRef }
       : undefined,
     transition,
     opacity: isDragging ? 0.9 : 1,
-    marginTop: '0.75rem',
-    border: '1px solid #ddd',
-    padding: '0.5rem',
-    background: isDragging ? '#fafafa' : 'transparent',
   }
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div ref={setNodeRef} style={style} {...attributes} className="block-card">
+      <div className="block-header">
         <strong>Block {index + 1}</strong>
-        <div style={{ display: 'flex', gap: '0.25rem' }}>
-          <button
-            onClick={() => onMove(block.id, -1)}
-            aria-label="Move up"
-            {...listeners}
-          >
-            ↑
-          </button>
-          <button
-            onClick={() => onMove(block.id, 1)}
-            aria-label="Move down"
-            {...listeners}
-          >
-            ↓
-          </button>
-          <button onClick={() => onRemove(block.id)} aria-label="Delete">
-            ✕
-          </button>
+        <div className="block-actions">
+          <Button variant="secondary" size="sm" onClick={() => onMove(block.id, -1)} aria-label="Move up" {...listeners}>↑</Button>
+          <Button variant="secondary" size="sm" onClick={() => onMove(block.id, 1)} aria-label="Move down" {...listeners}>↓</Button>
+          <Button variant="secondary" size="sm" onClick={() => onRemove(block.id)} aria-label="Delete">✕</Button>
         </div>
       </div>
       <textarea
         value={block.html}
         onChange={(e) => onUpdate(block.id, e.target.value)}
         rows={6}
-        style={{ width: '100%', fontFamily: 'monospace', marginTop: '0.5rem' }}
+        className="block-textarea"
       />
     </div>
   )
@@ -83,6 +66,18 @@ export default function BlockComposer() {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
+
+  // Extract tags from blocks whenever they change
+  useEffect(() => {
+    const found = new Set()
+    const re = /\{\{([^}]+)\}\}/g
+    for (const b of state.blocks) {
+      if (typeof b.html !== 'string') continue
+      let m
+      while ((m = re.exec(b.html))) found.add(m[1].trim())
+    }
+    dispatch({ type: 'SET_TAGS', payload: Array.from(found) })
+  }, [state.blocks, dispatch])
 
   const add = () => {
     if (!draft.trim()) return
@@ -133,20 +128,18 @@ export default function BlockComposer() {
   }
 
   return (
-    <section style={{ marginBottom: '1.5rem' }}>
+    <section className="section">
       <h2>Blocks</h2>
       <textarea
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         placeholder="Paste HTML with {{tag}} placeholders..."
         rows={4}
-        style={{ width: '100%', fontFamily: 'monospace' }}
+        className="field"
       />
-      <button onClick={add} style={{ marginTop: '0.5rem' }}>
-        Add block
-      </button>
+      <Button onClick={add} className="mt-sm">Add block</Button>
 
-      <div aria-live="polite" ref={announceRef} style={{ position: 'absolute', left: '-9999px' }} />
+      <div aria-live="polite" ref={announceRef} className="sr-only" />
 
       <DndContext
         sensors={sensors}

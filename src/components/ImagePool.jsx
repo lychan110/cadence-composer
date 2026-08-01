@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useApp } from '../AppContext.jsx'
+import { Button } from './ui/Button.jsx'
 
 const MAX_ENTRIES = 20
 const MAX_BYTES = 10 * 1024 * 1024
@@ -19,7 +20,6 @@ export default function ImagePool() {
   const getThumbnailSrc = (img) => {
     if (img.sourceType === 'url') return img.url
     if (img.sourceType === 'base64' && img.data) {
-      // data may already be a full data URL or just base64
       if (img.data.startsWith('data:')) return img.data
       return `data:image/png;base64,${img.data}`
     }
@@ -40,7 +40,6 @@ export default function ImagePool() {
     let byteLength = 0
     let data = value.trim()
     if (sourceType === 'base64') {
-      // handle data URL prefix
       const base64 = data.replace(/^data:image\/[^;]+;base64,/, '')
       byteLength = Math.ceil((base64.length * 3) / 4)
       if (byteLength > MAX_BYTES) {
@@ -81,19 +80,21 @@ export default function ImagePool() {
   }
 
   return (
-    <section style={{ marginBottom: '1.5rem' }}>
+    <section className="section">
       <h2>Image pool</h2>
-      <p>
+      <p className="muted-text mb-sm">
         {state.images.length}/{MAX_ENTRIES} entries · {(totalBytes / 1024 / 1024).toFixed(1)}MB / 10MB
       </p>
 
-      <div style={{ display: 'grid', gap: '0.5rem', marginTop: '0.5rem' }}>
+      <div className="field-group">
         <input
+          type="text"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="Label (matches {{tag}} or later reference)"
+          className="field"
         />
-        <select value={sourceType} onChange={(e) => setSourceType(e.target.value)}>
+        <select value={sourceType} onChange={(e) => setSourceType(e.target.value)} className="select">
           <option value="url">URL</option>
           <option value="base64">Base64</option>
         </select>
@@ -102,33 +103,29 @@ export default function ImagePool() {
           onChange={(e) => setValue(e.target.value)}
           placeholder={sourceType === 'url' ? 'https://...' : 'data:image/... or raw base64'}
           rows={3}
-          style={{ fontFamily: 'monospace' }}
+          className="field"
         />
-        <button onClick={add}>Add image</button>
-        {error && <p style={{ color: 'crimson' }}>{error}</p>}
+        <Button onClick={add}>Add image</Button>
+        {error && <p className="error-text">{error}</p>}
       </div>
 
-      <ul style={{ marginTop: '0.75rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', listStyle: 'none', padding: 0 }}>
+      <ul className="image-grid">
         {state.images.map((img) => (
-          <li key={img.id} style={{ border: '1px solid #ddd', padding: '0.5rem', minWidth: '120px', textAlign: 'center' }}>
-            <strong style={{ display: 'block', marginBottom: '0.25rem' }}>{img.label}</strong>
-            <div style={{ marginBottom: '0.25rem' }}>
+          <li key={img.id} className="image-card">
+            <strong className="image-label">{img.label}</strong>
+            <div className="image-thumb">
               {getThumbnailSrc(img) && (
                 <img
                   src={getThumbnailSrc(img)}
                   alt={img.label}
                   width={80}
-                  style={{ border: '1px solid #eee', borderRadius: '4px' }}
                 />
               )}
             </div>
-            <span style={{ fontSize: '0.75rem', color: '#666' }}>{img.sourceType}</span>
-            <button
-              onClick={() => remove(img.id)}
-              style={{ marginTop: '0.25rem', display: 'block', width: '100%' }}
-            >
+            <span className="muted-text">{img.sourceType}</span>
+            <Button variant="secondary" onClick={() => remove(img.id)} className="mt-sm" style={{ width: '100%' }}>
               Remove
-            </button>
+            </Button>
           </li>
         ))}
       </ul>

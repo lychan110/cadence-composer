@@ -1,28 +1,17 @@
-import { useEffect } from 'react'
 import { useApp } from '../AppContext.jsx'
 
 export default function TagRegistry() {
-  const { state, dispatch } = useApp()
-
-  useEffect(() => {
-    const found = new Set()
-    const re = /\{\{([^}]+)\}\}/g
-    for (const b of state.blocks) {
-      let m
-      while ((m = re.exec(b.html))) found.add(m[1].trim())
-    }
-    dispatch({ type: 'SET_TAGS', payload: Array.from(found) })
-  }, [state.blocks, dispatch])
+  const { state } = useApp()
 
   return (
-    <section style={{ marginBottom: '1.5rem' }}>
+    <section className="section">
       <h2>Tags</h2>
       {state.tags.length === 0 && (
-        <p>No tags yet. Add some {'{{tag}}'} placeholders in your blocks.</p>
+        <p className="muted-text">{'No tags yet. Add some {{tag}} placeholders in your blocks.'}</p>
       )}
-      <ul>
+      <ul className="tag-list">
         {state.tags.map((t) => (
-          <li key={t}>{t}</li>
+          <li key={t} className="tag-item">{t}</li>
         ))}
       </ul>
     </section>
