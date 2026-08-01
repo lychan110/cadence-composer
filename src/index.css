@@ -20,3 +20,33 @@ body {
   max-width: 1440px;
   margin: 0 auto;
 }
+
+@media print {
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .no-print,
+  header,
+  nav,
+  aside,
+  [data-no-print] {
+    display: none !important;
+  }
+  #root {
+    max-width: none;
+    margin: 0;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+    page-break-inside: avoid;
+  }
+  .print-block {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+  .print-block + .print-block {
+    page-break-before: always;
+  }
+}
