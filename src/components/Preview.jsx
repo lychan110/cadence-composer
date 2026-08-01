@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useApp } from '../AppContext.jsx'
 import DOMPurify from 'dompurify'
 import { substitute } from '../lib/template.js'
@@ -8,7 +8,6 @@ export default function Preview() {
   const { state } = useApp()
   const containerRef = useRef(null)
 
-  // Compute preview HTML: first CSV row if rendered, else placeholders
   const previewHtml = (() => {
     if (state.renderResults.length > 0) {
       return DOMPurify.sanitize(state.renderResults[0].html)
@@ -24,18 +23,17 @@ export default function Preview() {
   if (!previewHtml) {
     return (
       <section className="section">
-        <h2>Preview</h2>
-        <p className="muted-text">Add blocks to see a live preview.</p>
+        <p className="muted-text" style={{ padding: '24px 0', textAlign: 'center', fontSize: 15 }}>
+          Add blocks to see a live preview.
+        </p>
       </section>
     )
   }
 
   return (
     <section className="section">
-      <h2>Preview</h2>
       <div
         ref={containerRef}
-        // DOMPurify.sanitize is applied above — content is trusted post-sanitization
         dangerouslySetInnerHTML={{ __html: previewHtml }}
         className="preview-container"
       />

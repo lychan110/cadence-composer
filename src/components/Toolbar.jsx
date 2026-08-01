@@ -92,10 +92,9 @@ export default function Toolbar() {
   }
 
   return (
-    <div className="toolbar mb-lg flex items-center flex-wrap gap-sm">
-      <h1 className="mr-md">Cadence</h1>
-      <Button onClick={saveTemplate} variant="primary">Save template</Button>
-      <label className="button-label">
+    <div className="toolbar mb-sm">
+      <Button onClick={saveTemplate} variant="primary" size="sm">Save template</Button>
+      <label className="button-label" style={{ minHeight: 34, fontSize: 13, padding: '0 13px' }}>
         Load template
         <input
           type="file"
@@ -106,9 +105,9 @@ export default function Toolbar() {
       </label>
       {state.csvRows.length > 0 && (
         <>
-          <Button onClick={renderAll} variant="primary">Render all rows</Button>
+          <Button onClick={renderAll} variant="primary" size="sm">Render all</Button>
           {state.renderResults.length > 0 && (
-            <Button onClick={downloadZip} variant="primary">Download ZIP</Button>
+            <Button onClick={downloadZip} variant="primary" size="sm">Download ZIP</Button>
           )}
         </>
       )}

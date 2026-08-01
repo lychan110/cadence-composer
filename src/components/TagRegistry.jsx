@@ -5,7 +5,6 @@ export default function TagRegistry() {
 
   return (
     <section className="section">
-      <h2>Tags</h2>
       {state.tags.length === 0 && (
         <p className="muted-text">{'No tags yet. Add some {{tag}} placeholders in your blocks.'}</p>
       )}

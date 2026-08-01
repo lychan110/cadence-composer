@@ -14,11 +14,14 @@ export class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <pre style={{ color: 'red', padding: '1rem', whiteSpace: 'pre-wrap' }}>
-          {this.state.error?.message || this.state.error?.toString() || 'Unknown error'}
-          {'\n\n'}
-          {this.state.error?.stack || ''}
-        </pre>
+        <div className="section error-boundary">
+          <p className="error-text">{this.state.error?.message || this.state.error?.toString() || 'Unknown error'}</p>
+          {this.state.error?.stack && (
+            <pre className="muted-text" style={{ whiteSpace: 'pre-wrap', overflow: 'auto' }}>
+              {this.state.error.stack}
+            </pre>
+          )}
+        </div>
       )
     }
     return this.props.children

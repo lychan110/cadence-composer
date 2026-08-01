@@ -81,7 +81,6 @@ export default function ImagePool() {
 
   return (
     <section className="section">
-      <h2>Image pool</h2>
       <p className="muted-text mb-sm">
         {state.images.length}/{MAX_ENTRIES} entries · {(totalBytes / 1024 / 1024).toFixed(1)}MB / 10MB
       </p>

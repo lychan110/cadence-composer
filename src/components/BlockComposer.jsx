@@ -32,13 +32,13 @@ function SortableBlock({ block, index, onUpdate, onRemove, onMove, announceRef }
       ? `translate3d(${transform.x}px, ${transform.y}px, 0)`
       : undefined,
     transition,
-    opacity: isDragging ? 0.9 : 1,
+    opacity: isDragging ? 0.4 : 1,
   }
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} className="block-card">
       <div className="block-header">
-        <strong>Block {index + 1}</strong>
+        <span className="block-header-title">Block {index + 1}</span>
         <div className="block-actions">
           <Button variant="secondary" size="sm" onClick={() => onMove(block.id, -1)} aria-label="Move up" {...listeners}>↑</Button>
           <Button variant="secondary" size="sm" onClick={() => onMove(block.id, 1)} aria-label="Move down" {...listeners}>↓</Button>
@@ -80,10 +80,8 @@ export default function BlockComposer() {
 
   const add = () => {
     const trimmed = (draft || '').trim()
-    console.log('[BlockComposer] add click', { draft, trimmed, len: (draft || '').length })
     if (!trimmed) return
     const payload = [...state.blocks, { id: crypto.randomUUID(), html: trimmed }]
-    console.log('[BlockComposer] dispatching SET_BLOCKS', { count: payload.length })
     dispatch({ type: 'SET_BLOCKS', payload })
     setDraft('')
   }
@@ -129,7 +127,6 @@ export default function BlockComposer() {
 
   return (
     <section className="section">
-      <h2>Blocks</h2>
       <div className="field-group">
         <textarea
           value={draft}
@@ -138,9 +135,9 @@ export default function BlockComposer() {
           rows={4}
           className="field"
         />
-        <Button onClick={add} className="mt-sm">Add block</Button>
+        <Button onClick={add}>Add block</Button>
       </div>
-      <p className="muted-text">Blocks: {state.blocks.length} · Draft length: {(draft || '').length}</p>
+      <p className="muted-text mt-sm">Blocks: {state.blocks.length} · Draft length: {(draft || '').length}</p>
 
       <div aria-live="polite" ref={announceRef} className="sr-only" />
 

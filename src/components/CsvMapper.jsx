@@ -56,8 +56,7 @@ export default function CsvMapper() {
 
   return (
     <section className="section">
-      <h2>CSV</h2>
-      <label className="button-label">
+      <label className="button-label" style={{ minHeight: 34, fontSize: 13, padding: '0 13px' }}>
         Choose File
         <input
           type="file"
@@ -69,7 +68,6 @@ export default function CsvMapper() {
 
       {state.csvHeaders.length > 0 && (
         <div className="mt-md">
-          <h3>Column mapping</h3>
           {state.csvHeaders.map((header, idx) => (
             <div key={header} className="field-row">
               <label className="field-label">
@@ -99,10 +97,6 @@ export default function CsvMapper() {
 
           {state.renderResults.length > 0 && (
             <div className="mt-lg pt-md border-t">
-              <h3>Rendered rows</h3>
-              <p className="muted-text">
-                {state.renderResults.length} rendered, {state.renderErrors.length} errors
-              </p>
               {state.renderErrors.length > 0 && (
                 <details>
                   <summary className="error-text cursor-pointer">Errors</summary>
