@@ -16,7 +16,9 @@ export default function Preview() {
     if (state.blocks.length === 0) return null
     const subbed = substitute(state.blocks, state.tags, {})
     const resolved = buildExportPayload(subbed, state.images)
-    return DOMPurify.sanitize(resolved.map((b) => b.html).join('\n'))
+    return DOMPurify.sanitize(
+      resolved.map((block) => `<div class="print-block">${block.html}</div>`).join('\n')
+    )
   })()
 
   if (!previewHtml) {
