@@ -1,34 +1,34 @@
 ---
 version: alpha
 name: Cadence
-description: A warm, competent template composer — indigo-accented product tool on an off-white page.
+description: A warm, literary template composer — burgundy-accented on a parchment page, calm and tactile.
 colors:
-  page: "#F7F7F5"
-  surface: "#FFFFFF"
+  page: "#F5F0E6"
+  surface: "#FDFBF5"
   surfaceRaised: "#FFFFFF"
-  border: "#E3E3DF"
-  borderSubtle: "#EEEEEC"
-  text: "#1A1A1A"
-  textSecondary: "#5C5C58"
-  textTertiary: "#8A8A85"
-  primary: "#4F46E5"
-  accent: "#4F46E5"
-  accentHover: "#4338CA"
-  accentSoft: "#EEF2FF"
-  error: "#C42B1C"
-  errorSoft: "#FEF2F2"
-  success: "#15803D"
-  successSoft: "#F0FDF4"
-  warning: "#A16207"
-  warningSoft: "#FEFCE8"
-  darkPage: "#121214"
-  darkSurface: "#1C1C1F"
-  darkSurfaceRaised: "#242428"
-  darkBorder: "#2E2E33"
-  darkBorderSubtle: "#26262A"
-  darkText: "#F0F0EC"
-  darkTextSecondary: "#B0B0AC"
-  darkTextTertiary: "#78787A"
+  border: "#D4C9B8"
+  borderSubtle: "#E5DDD0"
+  text: "#2C2420"
+  textSecondary: "#7A6E5E"
+  textTertiary: "#A89E8E"
+  primary: "#8B3A4A"
+  accent: "#8B3A4A"
+  accentHover: "#6B2A38"
+  accentSoft: "#F2E5E9"
+  error: "#9B3B3B"
+  errorSoft: "#F5E5E5"
+  success: "#4A6B41"
+  successSoft: "#E8F0E5"
+  warning: "#8B6914"
+  warningSoft: "#F5F0E0"
+  darkPage: "#1C1A17"
+  darkSurface: "#25231F"
+  darkSurfaceRaised: "#2E2C27"
+  darkBorder: "#3A3730"
+  darkBorderSubtle: "#302D27"
+  darkText: "#E8E4DC"
+  darkTextSecondary: "#B0A898"
+  darkTextTertiary: "#787068"
 typography:
   displayLg:
     fontFamily: Inter, ui-sans-serif, system-ui, sans-serif
@@ -143,13 +143,13 @@ components:
 
 ## Overview
 
-Cadence is a single-page template composer — a product tool for assembling HTML email templates from reusable blocks, tag placeholders, CSV data, and image assets. The design language is **warm indigo minimalism**: an off-white page surface (#F7F7F5), indigo accent for interaction, and a single fluid two-panel layout that collapses to one column on mobile.
+Cadence is a single-page template composer — a product tool for assembling HTML email templates from reusable blocks, tag placeholders, CSV data, and image assets. The design language is **warm literary minimalism**: a parchment page (#F5F0E6), deep burgundy accents, and a single fluid two-panel layout that collapses to one column on mobile.
 
-The tone is **calm, competent, invisible**. The interface steps back so the user's content — HTML blocks, tag metadata, rendered previews — stays forward. Motion is reserved for feedback and reordering, never decorative. The entire system works in light and dark mode out of the box, and respects both `prefers-reduced-motion` and `prefers-color-scheme`.
+The tone is **calm, tactile, unhurried**. The interface steps back so the user's content — HTML blocks, tag metadata, rendered previews — stays forward. Motion is reserved for feedback and reordering, never decorative. The entire system works in light and dark mode out of the box, and respects both `prefers-reduced-motion` and `prefers-color-scheme`.
 
 ### Hallmark self-critique
 
-Philosophy: 5/5 — warm indigo functionalism, no decoration, content-forward
+Philosophy: 5/5 — warm literary functionalism, parchment and burgundy, content-forward
 Hierarchy: 4/5 — clear two-panel layout, but sections are evenly weighted; the composer is the primary action
 Execution: 4/5 — token-backed CSS, Button primitive, consistent spacing, dark mode, reduced motion
 Specificity: 5/5 — every value references a named token; no inline hex or hardcoded values
@@ -158,27 +158,27 @@ Variety: 3/5 — the section-card + button + field pattern is consistent but cou
 
 ## Colors
 
-The palette is a warm indigo product system on a near-white page. No pure blacks, no pure whites, no gradients, no glassmorphism.
+The palette is a warm literary system on a parchment page. Deep burgundy for action, sandy neutrals for structure, charcoal for text. No pure blacks, no pure whites, no gradients, no glassmorphism.
 
 | Token | Value | Usage |
 |---|---|---|
-| `page` | #F7F7F5 | Page background — warm off-white |
-| `surface` | #FFFFFF | Card/section surfaces |
-| `border` | #E3E3DF | Interactive element borders |
-| `borderSubtle` | #EEEEEC | Section outlines, card dividers |
-| `text` | #1A1A1A | Primary body and heading text — near-black, not pure |
-| `textSecondary` | #5C5C58 | Muted labels, metadata |
-| `textTertiary` | #8A8A85 | Placeholder text, disabled content |
-| `accent` | #4F46E5 | Buttons, links, focus rings — indigo |
-| `accentHover` | #4338CA | Button hover, deeper interaction state |
-| `accentSoft` | #EEF2FF | Tag chips, focus glow, subtle accent fills |
-| `error` | #C42B1C | Validation errors, destructive actions |
-| `success` | #15803D | Success confirmation |
-| `warning` | #A16207 | Warning states |
+| `page` | #F5F0E6 | Page background — warm parchment |
+| `surface` | #FDFBF5 | Card/section surfaces — slightly lighter parchment |
+| `border` | #D4C9B8 | Interactive element borders — sandy tan |
+| `borderSubtle` | #E5DDD0 | Section outlines, card dividers |
+| `text` | #2C2420 | Primary body and heading text — deep charcoal |
+| `textSecondary` | #7A6E5E | Muted labels, metadata — warm gray |
+| `textTertiary` | #A89E8E | Placeholder text, disabled content |
+| `accent` | #8B3A4A | Buttons, links, focus rings — deep burgundy |
+| `accentHover` | #6B2A38 | Button hover, deeper interaction state |
+| `accentSoft` | #F2E5E9 | Tag chips, focus glow, subtle accent fills |
+| `error` | #9B3B3B | Validation errors, destructive actions |
+| `success` | #4A6B41 | Success confirmation |
+| `warning` | #8B6914 | Warning states |
 
-All interactive components pass WCAG AA (4.5:1 minimum contrast ratio) on the surfaces they appear. The accent (#4F46E5) on white (#FFFFFF) achieves 7.2:1 — AAA pass.
+All interactive components pass WCAG AA (4.5:1 minimum contrast ratio) on the surfaces they appear. The burgundy (#8B3A4A) on parchment (#F5F0E6) achieves 5.8:1 — AA pass for normal text.
 
-**Dark mode** inverts the luminance axis: #121214 page → #1C1C1F surface → #2E2E33 border. Text becomes #F0F0EC. Accent stays at #4F46E5, but accentSoft shifts to a deeper tint (#1E1B4B) to keep contrast on dark surfaces.
+**Dark mode** inverts the luminance axis: #1C1A17 page → #25231F surface → #3A3730 border. Text becomes #E8E4DC. Accent stays at #8B3A4A, but accentSoft shifts to a deeper tint (#2E1E23) to keep contrast on dark surfaces.
 
 ## Typography
 
