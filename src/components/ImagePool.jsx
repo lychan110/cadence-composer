@@ -41,6 +41,10 @@ export default function ImagePool() {
     let data = value.trim()
     if (sourceType === 'base64') {
       const base64 = data.replace(/^data:image\/[^;]+;base64,/, '')
+      if (!/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) {
+        setError('Value is not valid base64.')
+        return
+      }
       byteLength = Math.ceil((base64.length * 3) / 4)
       if (byteLength > MAX_BYTES) {
         setError('Single image exceeds 10MB.')
@@ -92,8 +96,9 @@ export default function ImagePool() {
           onChange={(e) => setLabel(e.target.value)}
           placeholder="Label (matches {{tag}} or later reference)"
           className="field"
+          aria-label="Image label"
         />
-        <select value={sourceType} onChange={(e) => setSourceType(e.target.value)} className="select">
+        <select value={sourceType} onChange={(e) => setSourceType(e.target.value)} className="select" aria-label="Image source type">
           <option value="url">URL</option>
           <option value="base64">Base64</option>
         </select>
@@ -103,6 +108,7 @@ export default function ImagePool() {
           placeholder={sourceType === 'url' ? 'https://...' : 'data:image/... or raw base64'}
           rows={3}
           className="field"
+          aria-label="Image source value"
         />
         <Button onClick={add}>Add image</Button>
         {error && <p className="error-text">{error}</p>}
@@ -122,7 +128,7 @@ export default function ImagePool() {
               )}
             </div>
             <span className="muted-text">{img.sourceType}</span>
-            <Button variant="secondary" onClick={() => remove(img.id)} className="mt-sm" style={{ width: '100%' }}>
+            <Button variant="secondary" onClick={() => remove(img.id)} className="mt-sm w-full">
               Remove
             </Button>
           </li>

@@ -182,21 +182,21 @@ All interactive components pass WCAG AA (4.5:1 minimum contrast ratio) on the su
 
 ## Typography
 
-**Inter** is the sole typeface — used for both display and body roles. The family carries the full weight range (300–900) with excellent screen rendering, so switching faces between heading and body adds no value and creates unnecessary visual chatter.
+Four faces, each with one job: **Fraunces** for display (the app title and H1), **Inter** for body and UI text, **Geist Mono** for code/HTML editing surfaces, and **Atkinson Hyperlegible** for labels where legibility matters most. This is the implemented stack in `tokens.css` (`--font-display`, `--font-body`, `--font-mono`, `--font-label`).
 
 The scale is deliberately compact (4 sizes for body, 2 for display) to keep the tool dense but legible:
 
 | Token | Size | Weight | Usage |
 |---|---|---|---|
 | displayLg | 1.5rem / 24px | 700 | Page title (H1) |
-| displayMd | 1.125rem / 18px | 600 | Section headings (H2) |
-| bodyMd | 0.875rem / 14px | 400 | Primary body text |
-| bodySm | 0.75rem / 12px | 400 | Labels, metadata |
+| displayMd | 1.125rem / 18px | 500 italic | App header title |
+| bodyMd | 0.875rem / 14px | 400 | Primary body text, block titles |
+| bodySm | 0.75rem / 12px | 400 | Labels, metadata, button text |
 | bodyXs | 0.6875rem / 11px | 400 | Tags, counters, muted status |
 | codeMd | 0.8125rem / 13px | 400 | Code/HTML editing textareas |
 
-- All headings are roman (`font-style: normal`) — no italic headers
-- Code blocks use `ui-monospace` stack for monospace editing surfaces
+- Headings are roman; the one italic usage is the Fraunces app header title
+- Code blocks use the `--font-mono` stack (Geist Mono, then ui-monospace fallbacks) for editing surfaces
 - Line length for prose blocks is constrained to ~65ch where possible
 - Kerning is normal; only the H1 displayLg carries `-0.02em` tracking
 
@@ -244,7 +244,7 @@ Rounding is consistent and modest — never pill or circle, never sharp angular.
 
 ### Button
 
-Two variants: `primary` (solid indigo fill, white text) and `secondary` (white fill, border, indigo text). Both have `min-height: 44px` for touch-target compliance. A `size="sm"` variant reduces to `min-height: 36px` for compact inline actions (move up/down, delete).
+Two variants: `primary` (solid burgundy `--color-accent` fill, white text) and `secondary` (surface fill, border, text color). Both have `min-height: 44px` for touch-target compliance. A `size="sm"` variant reduces to `min-height: 34px` for compact inline actions (move up/down, delete, toolbar).
 
 States: default, hover, `:focus-visible`, `:active`, disabled (0.5 opacity, pointer-events none). Transitions use `--ease-out` (150ms) on background-color and color only.
 
@@ -293,10 +293,10 @@ Purposeful and minimal — never decorative.
 
 **Don't:**
 - Don't wrap sections in nested cards — the section is already the card
-- Don't use Inter italic for headings — all display type is roman
+- Don't use Fraunces italic beyond the app header title — display type is otherwise roman
 - Don't add glassmorphism, gradients, or decorative shadows
 - Don't use bounce elastic easings — use the three named easings only
 - Don't animate layout properties (width, height, margin, padding, top, left)
-- Don't introduce a new font family — Inter covers everything
+- Don't add a fifth font family — the four-face stack in tokens.css covers everything
 - Don't skip the `prefers-reduced-motion` fallback
 - Don't add hero illustrations, brand imagery, or decorative chrome — this is a tool, not a marketing page
