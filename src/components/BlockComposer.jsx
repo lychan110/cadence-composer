@@ -134,10 +134,11 @@ export default function BlockComposer() {
           placeholder="Paste HTML with {{tag}} placeholders..."
           rows={4}
           className="field"
+          aria-label="New block HTML"
         />
         <Button onClick={add}>Add block</Button>
       </div>
-      <p className="muted-text mt-sm">Blocks: {state.blocks.length} · Draft length: {(draft || '').length}</p>
+      <p className="muted-text mt-sm">Blocks: {state.blocks.length}</p>
 
       <div aria-live="polite" ref={announceRef} className="sr-only" />
 

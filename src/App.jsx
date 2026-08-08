@@ -17,38 +17,58 @@ function App() {
       <div className="app-shell">
         <header className="app-header no-print">
           <span className="app-header-eyebrow">CADENCE</span>
-          <span className="app-header-title">Template Composer</span>
+          <h1 className="app-header-title">Template Composer</h1>
           <div className="app-header-right">
-            <div className="tab-switcher">
+            <div className="tab-switcher" role="tablist" aria-label="Composer view">
               <button
                 className={`tab-option${activePane === 'edit' ? ' active' : ''}`}
                 onClick={() => setActivePane('edit')}
+                role="tab"
+                aria-selected={activePane === 'edit'}
+                aria-controls="pane-edit"
+                id="tab-edit"
               >Edit</button>
               <button
                 className={`tab-option${activePane === 'preview' ? ' active' : ''}`}
                 onClick={() => setActivePane('preview')}
+                role="tab"
+                aria-selected={activePane === 'preview'}
+                aria-controls="pane-preview"
+                id="tab-preview"
               >Preview</button>
             </div>
           </div>
         </header>
 
-        <div className="content-split" id="main">
-          <div className={`pane editor-pane${activePane === 'edit' ? ' visible-mobile' : ' hidden-mobile'}`}>
-            <Toolbar />
-            <div className="section-eyebrow">BLOCKS</div>
-            <BlockComposer />
-            <div className="section-eyebrow">TAGS</div>
-            <TagRegistry />
-            <div className="section-eyebrow">IMAGES</div>
-            <ImagePool />
-            <div className="section-eyebrow">CSV DATA</div>
-            <CsvMapper />
+        <ErrorBoundary>
+          <div className="content-split" id="main">
+            <div
+              className={`pane editor-pane${activePane === 'edit' ? ' visible-mobile' : ' hidden-mobile'}`}
+              role="tabpanel"
+              id="pane-edit"
+              aria-labelledby="tab-edit"
+            >
+              <Toolbar />
+              <div className="section-eyebrow">BLOCKS</div>
+              <BlockComposer />
+              <div className="section-eyebrow">TAGS</div>
+              <TagRegistry />
+              <div className="section-eyebrow">IMAGES</div>
+              <ImagePool />
+              <div className="section-eyebrow">CSV DATA</div>
+              <CsvMapper />
+            </div>
+            <div
+              className={`pane preview-pane${activePane === 'preview' ? ' visible-mobile' : ' hidden-mobile'}`}
+              role="tabpanel"
+              id="pane-preview"
+              aria-labelledby="tab-preview"
+            >
+              <div className="section-eyebrow">PREVIEW</div>
+              <Preview />
+            </div>
           </div>
-          <div className={`pane preview-pane${activePane === 'preview' ? ' visible-mobile' : ' hidden-mobile'}`}>
-            <div className="section-eyebrow">PREVIEW</div>
-            <Preview />
-          </div>
-        </div>
+        </ErrorBoundary>
       </div>
     </AppProvider>
   )

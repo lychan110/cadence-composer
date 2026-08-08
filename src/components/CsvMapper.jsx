@@ -13,15 +13,21 @@ export default function CsvMapper() {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
+      error: (err) => {
+        dispatch({ type: 'SET_CSV_ERROR', payload: err?.message || 'Failed to parse CSV' })
+      },
       complete: (results) => {
         const headers = results.meta.fields ?? []
         const rows = results.data
+        const parseError = results.errors?.[0]?.message
         dispatch({
           type: 'SET_CSV',
-          payload: { rows, headers, mapping: state.csvMapping },
+          payload: { rows, headers, mapping: state.csvMapping, error: parseError },
         })
       },
     })
+    // Reset the input so selecting the same file again re-triggers onChange.
+    e.target.value = ''
   }
 
   const exactSuggestions = useMemo(() => {
@@ -56,15 +62,20 @@ export default function CsvMapper() {
 
   return (
     <section className="section">
-      <label className="button-label" style={{ minHeight: 34, fontSize: 13, padding: '0 13px' }}>
-        Choose File
+      <label className="button-label button-label--sm" htmlFor="csv-file-input">
+        Choose CSV file
         <input
+          id="csv-file-input"
           type="file"
-          accept=".csv"
+          accept=".csv,text/csv"
           onChange={onUpload}
           className="sr-only"
         />
       </label>
+
+      {state.csvError && (
+        <p className="error-text mt-sm" role="alert">{state.csvError}</p>
+      )}
 
       {state.csvHeaders.length > 0 && (
         <div className="mt-md">
@@ -76,6 +87,7 @@ export default function CsvMapper() {
                   value={state.csvMapping[header] ?? ''}
                   onChange={(e) => mapColumn(header, e.target.value)}
                   className="select"
+                  aria-label={`Map CSV column ${header} to a tag`}
                 >
                   <option value="">— ignore —</option>
                   {state.tags.map((t) => (
@@ -90,16 +102,24 @@ export default function CsvMapper() {
           ))}
 
           {unmappedTags.length > 0 && (
-            <p className="error-text mt-sm">Unmapped tags: {unmappedTags.join(', ')}</p>
+            <p className="warning-text mt-sm">Unmapped tags: {unmappedTags.join(', ')}</p>
           )}
 
           <p className="muted-text mt-sm">{state.csvRows.length} rows loaded</p>
+
+          <div aria-live="polite">
+            {state.renderResults.length > 0 && (
+              <p className="muted-text mt-sm">
+                {state.renderResults.length} rows rendered{state.renderErrors.length > 0 ? `, ${state.renderErrors.length} errors` : ''}
+              </p>
+            )}
+          </div>
 
           {state.renderResults.length > 0 && (
             <div className="mt-lg pt-md border-t">
               {state.renderErrors.length > 0 && (
                 <details>
-                  <summary className="error-text cursor-pointer">Errors</summary>
+                  <summary className="warning-text cursor-pointer">Errors</summary>
                   <ul className="mt-sm space-y-xs">
                     {state.renderErrors.map((e) => (
                       <li key={e.rowIndex}>Row {e.rowIndex + 1}: {e.error}</li>

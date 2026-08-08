@@ -7,6 +7,7 @@ const initialState = {
   csvRows: [],
   csvHeaders: [],
   csvMapping: {},
+  csvError: '',
   renderResults: [],
   renderErrors: [],
 }
@@ -25,9 +26,12 @@ function reducer(state, action) {
         csvRows: action.payload.rows,
         csvHeaders: action.payload.headers,
         csvMapping: action.payload.mapping ?? state.csvMapping,
+        csvError: action.payload.error ?? '',
         renderResults: [],
         renderErrors: [],
       }
+    case 'SET_CSV_ERROR':
+      return { ...state, csvError: action.payload }
     case 'SET_CSV_MAPPING':
       return { ...state, csvMapping: action.payload }
     case 'SET_RENDER_RESULTS':
