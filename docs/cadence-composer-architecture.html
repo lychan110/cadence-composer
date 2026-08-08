@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>cadence-composer — Architecture Map</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-2: #161b22;
+    --bg-3: #1c2230;
+    --panel: #161b22;
+    --border: #30363d;
+    --border-soft: #21262d;
+    --fg: #e6edf3;
+    --fg-dim: #8b949e;
+    --fg-mute: #6e7681;
+    --accent: #58a6ff;
+    --accent-2: #79c0ff;
+    --green: #3fb950;
+    --orange: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+    --cyan: #39c5cf;
+    --yellow: #e3b341;
+    --blue: #58a6ff;
+    --teal: #56d4dd;
+    --rose: #ff7b72;
+    --shadow: 0 4px 14px rgba(0,0,0,0.4);
+    --mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, Monaco, 'Cascadia Code', 'Liberation Mono', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .container { max-width: 1400px; margin: 0 auto; padding: 32px 28px 80px; }
+
+  /* Header */
+  header.top {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+  }
+  header.top h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 6px;
+    color: var(--fg);
+    letter-spacing: -0.01em;
+  }
+  header.top .sub {
+    color: var(--fg-dim);
+    font-size: 12px;
+  }
+  header.top .badges { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 4px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    color: var(--fg-dim);
+    font-size: 11px;
+  }
+  .badge.green { color: var(--green); border-color: rgba(63,185,80,0.35); }
+  .badge.blue  { color: var(--blue);  border-color: rgba(88,166,255,0.35); }
+  .badge.purple{ color: var(--purple);border-color: rgba(188,140,255,0.35); }
+  .badge.cyan  { color: var(--cyan);  border-color: rgba(57,197,207,0.35); }
+  .badge.orange{ color: var(--orange);border-color: rgba(210,153,34,0.35); }
+
+  /* Section */
+  section { margin-bottom: 36px; }
+  section h2 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-dim);
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  section h2 .count {
+    color: var(--fg-mute);
+    font-weight: 400;
+    font-size: 12px;
+    margin-left: 6px;
+  }
+
+  /* Stat grid */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+  }
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+  }
+  .stat .label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--fg-mute);
+    margin-bottom: 4px;
+  }
+  .stat .value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .stat .value.small { font-size: 14px; }
+  .stat.green .value { color: var(--green); }
+  .stat.blue .value { color: var(--blue); }
+  .stat.purple .value { color: var(--purple); }
+  .stat.cyan .value { color: var(--cyan); }
+  .stat.orange .value { color: var(--orange); }
+
+  /* Two-column split */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; } }
+
+  /* Cards */
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .card h3 {
+    font-size: 12px;
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-dim);
+    font-weight: 600;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  th, td {
+    text-align: left;
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--border-soft);
+    vertical-align: top;
+  }
+  th {
+    color: var(--fg-mute);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    background: var(--bg-2);
+  }
+  tr:last-child td { border-bottom: 0; }
+  td.num { color: var(--accent-2); font-variant-numeric: tabular-nums; }
+  td.code, code { font-family: var(--mono); color: var(--accent-2); }
+  td.muted { color: var(--fg-mute); font-size: 11px; }
+
+  /* Layer pills */
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border: 1px solid;
+  }
+  .pill.entry    { color: var(--blue);   border-color: rgba(88,166,255,0.4);  background: rgba(88,166,255,0.08); }
+  .pill.core     { color: var(--purple); border-color: rgba(188,140,255,0.4); background: rgba(188,140,255,0.08); }
+  .pill.internal { color: var(--cyan);   border-color: rgba(57,197,207,0.4);  background: rgba(57,197,207,0.08); }
+  .pill.util     { color: var(--green);  border-color: rgba(63,185,80,0.4);   background: rgba(63,185,80,0.08); }
+
+  /* Diagram */
+  .diagram-wrap {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { display: block; margin: 0 auto; max-width: 100%; height: auto; }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-soft);
+    font-size: 11px;
+    color: var(--fg-dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid; }
+
+  /* Edge list */
+  .edge-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 12px;
+  }
+  .edge-row:last-child { border-bottom: 0; }
+  .edge-row .from, .edge-row .to {
+    flex: 0 0 auto;
+    padding: 3px 9px;
+    border-radius: 3px;
+    background: var(--bg-3);
+    color: var(--fg);
+    font-weight: 500;
+    min-width: 100px;
+    text-align: center;
+  }
+  .edge-row .from { color: var(--blue); }
+  .edge-row .to   { color: var(--purple); }
+  .edge-row .arrow { color: var(--fg-mute); }
+  .edge-row .count {
+    color: var(--orange);
+    font-weight: 600;
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+  }
+  .edge-row .label { color: var(--fg-mute); font-size: 11px; }
+
+  /* Note */
+  .note {
+    background: var(--bg-2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--fg-dim);
+    border-radius: 0 4px 4px 0;
+    margin-top: 10px;
+  }
+
+  /* Hotspot list */
+  .hotspot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-soft);
+    font-size: 12px;
+  }
+  .hotspot:last-child { border-bottom: 0; }
+  .hotspot .bar {
+    flex: 1;
+    background: var(--bg-3);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+  }
+  .hotspot .bar .fill {
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    height: 100%;
+    border-radius: 3px;
+  }
+  .hotspot .num {
+    color: var(--orange);
+    font-weight: 600;
+    min-width: 28px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Cluster list */
+  .cluster {
+    border-left: 2px solid var(--border);
+    padding: 4px 0 4px 12px;
+    margin-bottom: 8px;
+  }
+  .cluster .head {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    font-size: 12px;
+  }
+  .cluster .head .name { color: var(--fg); font-weight: 500; }
+  .cluster .head .meta { color: var(--fg-mute); font-size: 11px; }
+  .cluster .members { color: var(--fg-dim); font-size: 11px; margin-top: 3px; }
+
+  /* Footer */
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-soft);
+    color: var(--fg-mute);
+    font-size: 11px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="top">
+    <h1>cadence-composer <span style="color:var(--fg-mute);font-weight:400">— Architecture Map</span></h1>
+    <div class="sub">
+      <code>~/projects/cadence-composer</code> &middot; branch <code>main</code> &middot; HEAD <code>3951d7f</code>
+      &middot; <a href="https://hermes-agent.nousresearch.com/docs">source: codebase-memory fast mode</a>
+    </div>
+    <div class="badges">
+      <span class="badge green">React 19 SPA</span>
+      <span class="badge blue">Vite 6</span>
+      <span class="badge purple">@dnd-kit</span>
+      <span class="badge cyan">Client-only (no server)</span>
+      <span class="badge orange">128 nodes &middot; 200 edges</span>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <section>
+    <h2>Overview <span class="count">at a glance</span></h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="label">Graph nodes</div>
+        <div class="value">128</div>
+      </div>
+      <div class="stat">
+        <div class="label">Graph edges</div>
+        <div class="value">200</div>
+      </div>
+      <div class="stat green">
+        <div class="label">Functions</div>
+        <div class="value">35</div>
+      </div>
+      <div class="stat green">
+        <div class="label">Methods</div>
+        <div class="value">3</div>
+      </div>
+      <div class="stat blue">
+        <div class="label">Files</div>
+        <div class="value">25</div>
+      </div>
+      <div class="stat blue">
+        <div class="label">Folders</div>
+        <div class="value">6</div>
+      </div>
+      <div class="stat purple">
+        <div class="label">Sections</div>
+        <div class="value">17</div>
+      </div>
+      <div class="stat cyan">
+        <div class="label">JS files</div>
+        <div class="value">18</div>
+      </div>
+      <div class="stat orange">
+        <div class="label">Entry points</div>
+        <div class="value">13</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section>
+    <h2>Packages <span class="count">4 src packages</span></h2>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>Package</th><th>Path</th><th class="num">Nodes</th><th>Role</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>App</code></td>
+            <td class="muted"><code>src/App.jsx</code></td>
+            <td class="num">1</td>
+            <td>Root React component, pane switcher (Edit/Preview), shell layout</td>
+          </tr>
+          <tr>
+            <td><code>AppContext</code></td>
+            <td class="muted"><code>src/AppContext.jsx</code></td>
+            <td class="num">3</td>
+            <td>Global React Context — <code>AppProvider</code>, <code>useApp</code> hook (fan-in 6)</td>
+          </tr>
+          <tr>
+            <td><code>components</code></td>
+            <td class="muted"><code>src/components/</code></td>
+            <td class="num">28</td>
+            <td>Feature UI: BlockComposer, CsvMapper, ImagePool, Preview, TagRegistry, Toolbar, ErrorBoundary, <code>ui/</code> shared primitives</td>
+          </tr>
+          <tr>
+            <td><code>lib</code></td>
+            <td class="muted"><code>src/lib/</code></td>
+            <td class="num">7</td>
+            <td>Pure helpers — csv, pdf, sanitize, serialization, template substitution</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Entry points -->
+  <section>
+    <h2>Entry points <span class="count">13 exported symbols</span></h2>
+    <div class="split">
+      <div class="card">
+        <h3>UI components (8)</h3>
+        <table>
+          <tbody>
+            <tr><td><code>AppProvider</code></td><td class="muted">src/AppContext.jsx</td></tr>
+            <tr><td><code>useApp</code></td><td class="muted">src/AppContext.jsx</td></tr>
+            <tr><td><code>BlockComposer</code></td><td class="muted">src/components/BlockComposer.jsx</td></tr>
+            <tr><td><code>CsvMapper</code></td><td class="muted">src/components/CsvMapper.jsx</td></tr>
+            <tr><td><code>ImagePool</code></td><td class="muted">src/components/ImagePool.jsx</td></tr>
+            <tr><td><code>Preview</code></td><td class="muted">src/components/Preview.jsx</td></tr>
+            <tr><td><code>TagRegistry</code></td><td class="muted">src/components/TagRegistry.jsx</td></tr>
+            <tr><td><code>Toolbar</code></td><td class="muted">src/components/Toolbar.jsx</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Lib utilities (5)</h3>
+        <table>
+          <tbody>
+            <tr><td><code>parseCsv</code></td><td class="muted">src/lib/csv.js</td></tr>
+            <tr><td><code>printCurrentRow</code></td><td class="muted">src/lib/pdf.js</td></tr>
+            <tr><td><code>sanitizeHtml</code></td><td class="muted">src/lib/sanitize.js</td></tr>
+            <tr><td><code>buildExportPayload</code></td><td class="muted">src/lib/serialization.js</td></tr>
+            <tr><td><code>substitute</code></td><td class="muted">src/lib/template.js</td></tr>
+          </tbody>
+        </table>
+        <div class="note">Bootstrap: <code>src/main.jsx</code> mounts <code>&lt;App/&gt;</code> into <code>#root</code> via <code>ReactDOM.createRoot</code>.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Layers &amp; boundaries -->
+  <section>
+    <h2>Layers &amp; call boundaries <span class="count">4 layers · 4 inter-package edges</span></h2>
+    <div class="split">
+      <div class="card">
+        <h3>Layers</h3>
+        <table>
+          <thead><tr><th>Package</th><th>Layer</th><th>Reason</th></tr></thead>
+          <tbody>
+            <tr><td><code>App</code></td><td><span class="pill entry">entry</span></td><td class="muted">only outbound calls</td></tr>
+            <tr><td><code>AppContext</code></td><td><span class="pill core">core</span></td><td class="muted">high fan-in (7 in, 0 out)</td></tr>
+            <tr><td><code>components</code></td><td><span class="pill internal">internal</span></td><td class="muted">fan-in 6, fan-out 11</td></tr>
+            <tr><td><code>lib</code></td><td><span class="pill core">core</span></td><td class="muted">high fan-in (5 in, 0 out)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Cross-package calls</h3>
+        <div class="edge-row"><span class="from">App</span><span class="arrow">&rarr;</span><span class="to">components</span><span class="count">6</span></div>
+        <div class="edge-row"><span class="from">components</span><span class="arrow">&rarr;</span><span class="to">AppContext</span><span class="count">6</span></div>
+        <div class="edge-row"><span class="from">components</span><span class="arrow">&rarr;</span><span class="to">lib</span><span class="count">5</span></div>
+        <div class="edge-row"><span class="from">App</span><span class="arrow">&rarr;</span><span class="to">AppContext</span><span class="count">1</span></div>
+        <div class="note">Clean one-way data flow: <strong>App</strong> (entry) &rarr; <strong>components</strong> (orchestration) &rarr; <strong>AppContext</strong> &amp; <strong>lib</strong> (core utilities). No circular dependencies, no <code>App &rarr; lib</code> direct calls.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture diagram -->
+  <section>
+    <h2>Architecture diagram <span class="count">self-contained SVG</span></h2>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 1080 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Architecture diagram">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#58a6ff"/>
+          </marker>
+          <marker id="arrow-purp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#bc8cff"/>
+          </marker>
+          <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#39c5cf"/>
+          </marker>
+          <style>
+            .box { fill: #161b22; stroke-width: 1.5; }
+            .lbl { font-family: 'JetBrains Mono', monospace; fill: #e6edf3; }
+            .sub { font-family: 'JetBrains Mono', monospace; fill: #8b949e; font-size: 11px; }
+            .edge { fill: none; stroke-width: 1.5; }
+          </style>
+        </defs>
+
+        <!-- Title -->
+        <text x="540" y="26" text-anchor="middle" class="lbl" style="font-size:14px;font-weight:600">cadence-composer — runtime call graph</text>
+
+        <!-- Entry: main.jsx -->
+        <rect class="box" x="430" y="50" width="220" height="50" rx="6" stroke="#58a6ff"/>
+        <text x="540" y="72" text-anchor="middle" class="lbl" style="font-size:13px">src/main.jsx</text>
+        <text x="540" y="88" text-anchor="middle" class="sub">ReactDOM.createRoot</text>
+
+        <!-- App layer -->
+        <rect class="box" x="400" y="140" width="280" height="60" rx="6" stroke="#58a6ff"/>
+        <text x="540" y="165" text-anchor="middle" class="lbl" style="font-size:13px">App</text>
+        <text x="540" y="184" text-anchor="middle" class="sub">shell · Edit/Preview pane switcher</text>
+
+        <!-- AppContext -->
+        <rect class="box" x="60" y="260" width="260" height="80" rx="6" stroke="#bc8cff"/>
+        <text x="190" y="285" text-anchor="middle" class="lbl" style="font-size:13px">AppContext</text>
+        <text x="190" y="303" text-anchor="middle" class="sub">AppProvider · useApp (hook)</text>
+        <text x="190" y="322" text-anchor="middle" class="sub">fan-in 6 · global state</text>
+
+        <!-- components parent -->
+        <rect class="box" x="380" y="260" width="320" height="80" rx="6" stroke="#39c5cf"/>
+        <text x="540" y="285" text-anchor="middle" class="lbl" style="font-size:13px">components/</text>
+        <text x="540" y="303" text-anchor="middle" class="sub">BlockComposer · CsvMapper · ImagePool</text>
+        <text x="540" y="322" text-anchor="middle" class="sub">Preview · TagRegistry · Toolbar</text>
+
+        <!-- lib -->
+        <rect class="box" x="760" y="260" width="260" height="80" rx="6" stroke="#3fb950"/>
+        <text x="890" y="285" text-anchor="middle" class="lbl" style="font-size:13px">lib/</text>
+        <text x="890" y="303" text-anchor="middle" class="sub">csv · pdf · sanitize</text>
+        <text x="890" y="322" text-anchor="middle" class="sub">serialization · template</text>
+
+        <!-- Edges from main to App -->
+        <line class="edge" x1="540" y1="100" x2="540" y2="138" stroke="#58a6ff" marker-end="url(#arrow)"/>
+
+        <!-- App -> AppContext (1) -->
+        <path class="edge" d="M 420 180 Q 320 200 220 258" stroke="#bc8cff" marker-end="url(#arrow-purp)"/>
+        <text x="290" y="218" class="sub" fill="#bc8cff">AppProvider wrap</text>
+
+        <!-- App -> components (6) -->
+        <path class="edge" d="M 540 200 L 540 258" stroke="#39c5cf" marker-end="url(#arrow-cyan)"/>
+        <text x="552" y="232" class="sub" fill="#39c5cf">×6 mounts</text>
+
+        <!-- components -> AppContext (6) -->
+        <path class="edge" d="M 380 290 Q 300 290 322 290" stroke="#bc8cff" marker-end="url(#arrow-purp)"/>
+        <text x="300" y="370" class="sub" fill="#bc8cff">×6 useApp()</text>
+
+        <!-- components -> lib (5) -->
+        <path class="edge" d="M 700 290 Q 740 290 758 290" stroke="#3fb950" marker-end="url(#arrow)"/>
+        <text x="710" y="370" class="sub" fill="#3fb950">×5 calls</text>
+
+        <!-- Hotspot annotations -->
+        <rect class="box" x="60" y="400" width="320" height="110" rx="6" stroke="#d29922" stroke-dasharray="4 3"/>
+        <text x="220" y="420" text-anchor="middle" class="lbl" style="font-size:12px;color:#d29922">★ hottest symbol</text>
+        <text x="220" y="442" text-anchor="middle" class="lbl" style="font-size:12px">useApp (fan-in 6)</text>
+        <text x="220" y="462" text-anchor="middle" class="sub">called by every feature component</text>
+        <text x="220" y="480" text-anchor="middle" class="sub">via React Context — single source of truth</text>
+        <text x="220" y="498" text-anchor="middle" class="sub">buildExportPayload · substitute (fan-in 2)</text>
+
+        <!-- Cluster annotations -->
+        <rect class="box" x="420" y="400" width="600" height="110" rx="6" stroke="#21262d" stroke-dasharray="4 3"/>
+        <text x="720" y="420" text-anchor="middle" class="lbl" style="font-size:12px">Leiden clusters (de-facto modules)</text>
+        <text x="720" y="442" text-anchor="middle" class="sub">#0 App core  ·  #6 Preview+export  ·  #7 CSV+print  ·  #8 ImagePool  ·  #10 BlockComposer</text>
+        <text x="720" y="462" text-anchor="middle" class="sub">cohesion 0.38–0.67 · community detection on CALLS graph</text>
+        <text x="720" y="482" text-anchor="middle" class="sub">External deps: react 19 · @dnd-kit/{core,sortable,utilities} · dompurify · jszip · papaparse</text>
+        <text x="720" y="498" text-anchor="middle" class="sub">Build: vite 6 · @vitejs/plugin-react · vitest · @playwright/test</text>
+
+        <!-- Bottom labels -->
+        <text x="60" y="285" class="sub" fill="#bc8cff">core</text>
+        <text x="380" y="285" class="sub" fill="#39c5cf">internal</text>
+        <text x="760" y="285" class="sub" fill="#3fb950">core / util</text>
+        <text x="430" y="170" class="sub" fill="#58a6ff">entry</text>
+      </svg>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(88,166,255,0.2);border-color:#58a6ff"></span>entry / App</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(188,140,255,0.2);border-color:#bc8cff"></span>core / AppContext</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(57,197,207,0.2);border-color:#39c5cf"></span>internal / components</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(63,185,80,0.2);border-color:#3fb950"></span>util / lib</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:rgba(210,153,34,0.2);border-color:#d29922"></span>hotspot</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hotspots -->
+  <section>
+    <h2>Hotspots <span class="count">top 10 by fan-in</span></h2>
+    <div class="card">
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg)">useApp</code>
+        <div class="bar"><div class="fill" style="width:100%"></div></div>
+        <span class="num">6</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg)">buildExportPayload</code>
+        <div class="bar"><div class="fill" style="width:33%"></div></div>
+        <span class="num">2</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg)">substitute</code>
+        <div class="bar"><div class="fill" style="width:33%"></div></div>
+        <span class="num">2</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">TagRegistry</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">handlePrintRow</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">handleDownloadRow</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">mapColumn</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">CsvMapper</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">Preview</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="hotspot">
+        <code style="flex:0 0 220px;color:var(--fg-dim)">Toolbar</code>
+        <div class="bar"><div class="fill" style="width:17%"></div></div>
+        <span class="num">1</span>
+      </div>
+      <div class="note"><strong>useApp</strong> is the bottleneck — every feature component reads/writes through it. <code>buildExportPayload</code> &amp; <code>substitute</code> are the workhorses of the Preview export pipeline.</div>
+    </div>
+  </section>
+
+  <!-- Routes -->
+  <section>
+    <h2>Routes <span class="count">no HTTP routes — client-only SPA</span></h2>
+    <div class="card">
+      <p style="margin:0 0 8px;color:var(--fg-dim);font-size:12px">cadence-composer is a pure client-side React 19 + Vite 6 SPA. There is no backend server, no API surface, no async channels, and no cross-repo HTTP/async edges. The "routes" below are internal <em>pane</em> states owned by <code>App.jsx</code>:</p>
+      <table>
+        <thead><tr><th>Pane state</th><th>Switched via</th><th>Mounts</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>activePane = 'edit'</code></td>
+            <td class="muted"><code>tab-switcher</code> button in <code>app-header</code></td>
+            <td>Toolbar · BlockComposer · TagRegistry · ImagePool · CsvMapper</td>
+          </tr>
+          <tr>
+            <td><code>activePane = 'preview'</code></td>
+            <td class="muted"><code>tab-switcher</code> button in <code>app-header</code></td>
+            <td>Preview</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Clusters -->
+  <section>
+    <h2>Leiden clusters <span class="count">de-facto modules</span></h2>
+    <div class="card">
+      <div class="cluster">
+        <div class="head">
+          <span class="name">#0 &nbsp; App core</span>
+          <span class="meta">5 members · cohesion 0.38</span>
+        </div>
+        <div class="members">App · useApp · Toolbar · TagRegistry · AppProvider</div>
+      </div>
+      <div class="cluster">
+        <div class="head">
+          <span class="name">#7 &nbsp; CSV + print pipeline</span>
+          <span class="meta">5 members · cohesion 0.67</span>
+        </div>
+        <div class="members">CsvMapper · handlePrintRow · printCurrentRow · mapColumn · handleDownloadRow</div>
+      </div>
+      <div class="cluster">
+        <div class="head">
+          <span class="name">#6 &nbsp; Preview + export</span>
+          <span class="meta">4 members · cohesion 0.67</span>
+        </div>
+        <div class="members">Preview · substitute · buildExportPayload · renderAll</div>
+      </div>
+      <div class="cluster">
+        <div class="head">
+          <span class="name">#8 &nbsp; Image pool</span>
+          <span class="meta">3 members · cohesion 0.50</span>
+        </div>
+        <div class="members">ImagePool · getThumbnailSrc · remove</div>
+      </div>
+      <div class="cluster">
+        <div class="head">
+          <span class="name">#10 &nbsp; Block composer</span>
+          <span class="meta">3 members · cohesion 0.50</span>
+        </div>
+        <div class="members">BlockComposer · SortableBlock · add</div>
+      </div>
+      <div class="note">Clusters are computed via Leiden community detection over the CALLS graph. Cohesion is internal-edge-density. Cluster #7 is the tightest (CSV→print call chain); #0 is the loosest (App orchestration spans everything).</div>
+    </div>
+  </section>
+
+  <!-- Cross-boundary links -->
+  <section>
+    <h2>Cross-boundary links <span class="count">0 external · 3 internal packages</span></h2>
+    <div class="split">
+      <div class="card">
+        <h3>External dependencies (npm)</h3>
+        <table>
+          <tbody>
+            <tr><td><code>react</code> · <code>react-dom</code></td><td class="muted">v19.2.8 · UI runtime</td></tr>
+            <tr><td><code>@dnd-kit/core</code> · <code>sortable</code> · <code>utilities</code></td><td class="muted">v6/v10/v3 · drag &amp; drop</td></tr>
+            <tr><td><code>dompurify</code></td><td class="muted">v3.4.12 · used by lib/sanitize.js</td></tr>
+            <tr><td><code>papaparse</code></td><td class="muted">v5.5.4 · used by lib/csv.js</td></tr>
+            <tr><td><code>jszip</code></td><td class="muted">v3.10.1 · bulk export (likely serialization)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Internal edge types</h3>
+        <table>
+          <thead><tr><th>Edge</th><th class="num">Count</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>DEFINES</code></td><td class="num">94</td><td class="muted">file/section &rarr; symbol</td></tr>
+            <tr><td><code>CALLS</code></td><td class="num">31</td><td class="muted">function &rarr; function</td></tr>
+            <tr><td><code>IMPORTS</code></td><td class="num">27</td><td class="muted">file &rarr; file (ES modules)</td></tr>
+            <tr><td><code>CONTAINS_FILE</code></td><td class="num">25</td><td class="muted">folder &rarr; file</td></tr>
+            <tr><td><code>USAGE</code></td><td class="num">13</td><td class="muted">symbol &rarr; symbol reference</td></tr>
+            <tr><td><code>CONTAINS_FOLDER</code></td><td class="num">5</td><td class="muted">folder &rarr; folder</td></tr>
+            <tr><td><code>DEFINES_METHOD</code></td><td class="num">3</td><td class="muted">class &rarr; method</td></tr>
+            <tr><td><code>CONFIGURES</code></td><td class="num">1</td><td class="muted">vite config &rarr; plugin</td></tr>
+            <tr><td><code>HAS_BRANCH</code></td><td class="num">1</td><td class="muted">repo &rarr; main</td></tr>
+          </tbody>
+        </table>
+        <div class="note">No <code>CROSS_HTTP_CALLS</code>, <code>CROSS_ASYNC_CALLS</code>, or <code>CROSS_CHANNEL</code> edges — the app is fully isolated. CBM ran in <strong>fast</strong> mode (no similarity/semantic edges).</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Generated from <code>codebase-memory</code> fast-mode index · project <code>home-lychan-projects-cadence-composer</code> · 128 nodes / 200 edges · self-contained HTML, no external assets.
+  </footer>
+</div>
+</body>
+</html>

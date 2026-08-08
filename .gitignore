@@ -27,3 +27,6 @@ design-audit-localhost-*.json
 *.log
 .env
 .env.local
+
+# Lean-ctx local config
+.lean-ctx.toml
